@@ -1,0 +1,79 @@
+-- Base Reference Data
+select count(*) from REFDATA_DATATYPES where INDUSTRY_STD='HL7'
+select count(*) from REFDATA_FIELDS where INDUSTRY_STD='HL7'
+select count(*) from REFDATA_MESSAGES where INDUSTRY_STD='HL7'
+select count(*) from REFDATA_SEGMENTS where INDUSTRY_STD='HL7'
+
+select count(*) from REFDATA_DATATYPES where INDUSTRY_STD='NCPDP'
+select count(*) from REFDATA_FIELDS where INDUSTRY_STD='NCPDP'
+select count(*) from REFDATA_MESSAGES where INDUSTRY_STD='NCPDP'
+select count(*) from REFDATA_SEGMENTS where INDUSTRY_STD='NCPDP'
+
+select count(*) from REFDATA_DATATYPES where INDUSTRY_STD='HIPAA'
+select count(*) from REFDATA_FIELDS where INDUSTRY_STD='HIPAA'
+select count(*) from REFDATA_MESSAGES where INDUSTRY_STD='HIPAA'
+select count(*) from REFDATA_SEGMENTS where INDUSTRY_STD='HIPAA'
+
+select count(*) from REFDATA_DATATYPES where INDUSTRY_STD='X12'
+select count(*) from REFDATA_FIELDS where INDUSTRY_STD='X12'
+select count(*) from REFDATA_MESSAGES where INDUSTRY_STD='X12'
+select count(*) from REFDATA_SEGMENTS where INDUSTRY_STD='X12'
+
+select refFields.INDUSTRY_STD, refFields.FIELD_ID, refFields.FIELD_NAME, refFields.FIELD_DATATYPE,
+refFields.STATUS_ID
+from REFDATA_FIELDS refFields
+where INDUSTRY_STD = 'HIPAA'
+
+
+
+
+-- Makes sure fields have associated datatypes, statuses and industry stds
+select refFields.FIELD_ID, refFields.FIELD_NAME, refFields.FIELD_DATATYPE,
+refDTypes.DATATYPE_DESCRIPTION, refStatus.STATUS_DESCRIPTION, refIndStds.INDUSTRY_STD
+from REFDATA_FIELDS refFields,REFDATA_DATATYPES refDTypes,
+     REFDATA_STATUS refStatus,REFDATA_INDUSTRYSTD refIndStds
+where refFields.FIELD_DATATYPE = refDTypes.DATATYPE_ID
+and refStatus.STATUS_ID = refFields.STATUS_ID
+and refFields.INDUSTRY_STD = refIndStds.INDUSTRY_STD
+
+select refFields.FIELD_ID, refFields.FIELD_NAME, refFields.FIELD_DATATYPE,
+refDTypes.DATATYPE_DESCRIPTION, refStatus.STATUS_DESCRIPTION, refIndStds.INDUSTRY_STD
+from REFDATA_FIELDS refFields,REFDATA_DATATYPES refDTypes,
+     REFDATA_STATUS refStatus,REFDATA_INDUSTRYSTD refIndStds
+where refFields.FIELD_DATATYPE = refDTypes.DATATYPE_ID
+and refStatus.STATUS_ID = refFields.STATUS_ID
+and refFields.INDUSTRY_STD = ""
+
+
+
+select distinct INDUSTRY_STD, VERSION,count(*) from REFDATA_SEGMENTS_FIELDS
+group by INDUSTRY_STD, VERSION
+order by INDUSTRY_STD, VERSION
+
+-- Verify Segment Messages Load
+ select distinct INDUSTRY_STD, VERSION,SEGMENT_NAME, MESSAGE_ID,ORDER_ID from REFDATA_MESSAGES_SEGMENTS
+group by INDUSTRY_STD, VERSION,SEGMENT_NAME,MESSAGE_ID, ORDER_ID
+order by INDUSTRY_STD, VERSION, SEGMENT_NAME, MESSAGE_ID, ORDER_ID
+
+-- Select distinct segment_name
+select distinct REFDATA_MESSAGES_SEGMENTS.SEGMENT_NAME from REFDATA_MESSAGES_SEGMENTS
+group by REFDATA_MESSAGES_SEGMENTS.SEGMENT_NAME
+order by REFDATA_MESSAGES_SEGMENTS.SEGMENT_NAME
+
+-- Specific
+select INDUSTRY_STD, VERSION,SEGMENT_NAME, MESSAGE_ID,ORDER_ID from REFDATA_MESSAGES_SEGMENTS
+where message_id='ADT_A01' and version = '2.3'
+group by INDUSTRY_STD, VERSION,SEGMENT_NAME,MESSAGE_ID, ORDER_ID
+order by INDUSTRY_STD, VERSION, SEGMENT_NAME ASC, MESSAGE_ID, ORDER_ID ASC
+
+select distinct INDUSTRY_STD, VERSION,SEGMENT_NAME, count(*) from REFDATA_MESSAGES_SEGMENTS
+group by INDUSTRY_STD, VERSION,SEGMENT_NAME
+order by INDUSTRY_STD, VERSION, SEGMENT_NAME
+
+select distinct SEGMENT_NAME FROM REFDATA_MESSAGES_SEGMENTS
+GROUP BY SEGMENT_NAME
+ORDER BY SEGMENT_NAME
+
+select distinct version  FROM REFDATA_MESSAGES_SEGMENTS
+group by version
+order by version
